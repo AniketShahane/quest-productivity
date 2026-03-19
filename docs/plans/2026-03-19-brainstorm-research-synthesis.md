@@ -1,7 +1,7 @@
 # Quest Productivity — Research-Backed Brainstorm
 
 **Date:** 2026-03-19
-**Status:** Iteration 5 — Data Model & User Flows
+**Status:** Complete — 10 Research Iterations
 
 ---
 
@@ -628,7 +628,167 @@ The app should encourage users to stack quest-checking with existing habits:
 
 ---
 
-## 10. Open Questions for User
+## 10. Onboarding Flow ("The First Quest")
+
+### Retention Context
+- Average Day 1 retention: ~25%. Day 7: ~12%. Day 30: ~6%.
+- First 3-7 days determine long-term retention
+- Goal: Get user to their first artifact within Session 1 (~5 minutes)
+
+### Onboarding as a Quest Chain
+
+```
+[Sign Up] ──→ Email/OAuth (Google recommended — also gets Calendar access)
+     │
+     ▼
+[Character Creation] (frames demographic collection as RPG)
+  - "Choose your adventurer name" (display name)
+  - "What domains do you quest in?" (select 3-5 from default list)
+  - "When does your day begin?" (sets morning Oracle time)
+  - "What's your morning trigger?" (habit stacking cue)
+     │
+     ▼
+[Tutorial Quest: "The First Step"]
+  - Pre-populated with 3 simple tasks the user can customize
+  - Example: "Reply to one email" (Work/Trivial), "Drink water" (Health/Trivial), "Read for 10 min" (Learning/Normal)
+  - User sees WOOP wizard for the Normal task (learning moment)
+  - Mark 1+ as complete immediately → FIRST XP ANIMATION (dopamine hit)
+     │
+     ▼
+[First Artifact Preview]
+  - Even with 1-3 completed quests, generate a simple artifact
+  - "This is your first artifact! Complete more quests to make it richer."
+  - Endowed progress: show weekly mosaic frame with Day 1 filled
+     │
+     ▼
+[Oracle Introduction]
+  - "I'm the Oracle. Tomorrow morning I'll prepare your quest board."
+  - "Connect your calendar so I can schedule around your day." (optional)
+  - Set notification preferences
+     │
+     ▼
+[Onboarding Complete]
+  - Award: "Novice Adventurer" badge (first collectible)
+  - Show: empty weekly mosaic with Day 1 artifact glowing
+  - CTA: "See you tomorrow morning!"
+```
+
+### Activation Metrics to Track
+- **Session 1:** Created account → completed 1+ quest → saw artifact (target: >70%)
+- **Day 1:** Returned after onboarding (target: >40%)
+- **Day 3:** Accepted Oracle's quest board (target: >30%)
+- **Day 7:** Completed first weekly mosaic view (target: >20%)
+- **Day 30:** Still active, 10+ artifacts collected (target: >15%)
+
+### Progressive Feature Unlocking
+- Day 1: Basic quests + daily artifacts
+- Day 3: Quest difficulty tiers unlock
+- Day 5: WOOP wizard for Hard+ tasks
+- Week 2: Boss Battles appear
+- Week 3: Analytics dashboard
+- Week 4: Full Oracle with energy-curve learning
+
+This prevents overwhelming new users while maintaining discovery dopamine.
+
+---
+
+## 11. MVP Scope Definition
+
+### Core Transaction
+The single core loop that MUST work perfectly: **Create quest → Complete quest → See artifact.**
+
+Everything else is enhancement. If this loop isn't satisfying, no amount of AI scheduling or social features will save it.
+
+### MVP (Phase 1) — "The Core Loop"
+
+**Build these. Nothing else.**
+
+| Feature | Why It's Essential |
+|---------|-------------------|
+| Auth (Google OAuth) | Gate to everything + calendar access later |
+| Quest CRUD (create, read, update, delete) | Core functionality |
+| Quick Add (title + domain + difficulty) | Low-friction task creation |
+| WOOP wizard (for Hard+ tasks) | Key differentiator, scientifically backed |
+| Daily quest board (manual scheduling) | Users need to see today's tasks |
+| Quest completion with XP | Core reward loop |
+| Daily artifact generation (SVG) | The "wow" moment, visual reward |
+| Weekly mosaic view | Longer-term progress visualization |
+| Heat map (cumulative progress) | Compassionate progress tracking |
+| Basic onboarding flow | First quest + first artifact in Session 1 |
+
+**Explicitly NOT in MVP:**
+- AI scheduling (complex, can be manual first)
+- Calendar integration
+- Boss Battles
+- Quest decomposition
+- Notifications (browser-only reminders at most)
+- Analytics dashboard
+- Social features
+- Recovery Arc
+- Mobile app (PWA only)
+
+### Phase 2 — "The Oracle"
+- AI task classification (domain + difficulty auto-suggest)
+- AI daily scheduling from backlog
+- Google Calendar integration
+- Planning fallacy correction
+- Push notifications
+- Oracle morning briefing
+
+### Phase 3 — "The Collection"
+- Monthly monuments
+- Rare artifact variants
+- Boss Battles
+- Quest decomposition for Epics
+- Analytics + weekly AI recap
+- Energy-curve learning
+
+### Phase 4 — "The Guild"
+- Recovery Arc / anti-burnout
+- Social features (party, guild, gallery)
+- Side quests
+- Advanced WOOP analytics
+
+### MVP Technical Architecture
+
+```
+Next.js 15 App Router
+├── app/
+│   ├── (auth)/          # Login, register
+│   ├── (app)/           # Authenticated routes
+│   │   ├── dashboard/   # Daily quest board
+│   │   ├── quests/      # Quest management (CRUD)
+│   │   ├── gallery/     # Artifact gallery + heat map
+│   │   └── settings/    # User preferences
+│   └── api/             # API routes
+│       ├── quests/      # Quest CRUD
+│       ├── artifacts/   # Artifact generation
+│       └── auth/        # Auth handlers
+├── components/
+│   ├── quest/           # Quest card, list, form
+│   ├── artifact/        # SVG renderer, gallery
+│   ├── woop/            # WOOP wizard steps
+│   └── ui/              # shadcn/ui components
+├── lib/
+│   ├── db/              # Drizzle schema + queries
+│   ├── artifact/        # SVG generation engine
+│   ├── xp/              # XP + level calculations
+│   └── auth/            # Auth config
+└── public/
+    └── icons/           # Domain icons, PWA icons
+```
+
+### MVP Success Criteria
+1. User can create a quest in <30 seconds
+2. User completes quest and sees XP animation in <2 seconds
+3. Daily artifact generates correctly from quest data
+4. Weekly mosaic displays 7 days with gaps for missed days
+5. Onboarding completes in <5 minutes with first artifact earned
+6. Heat map shows cumulative progress without streak anxiety
+
+---
+
+## 12. Open Questions for User
 
 1. **Solo or multiplayer first?** Research says social features boost retention but add complexity. Recommend solo-first, social Layer 5.
 2. **Mobile-first or desktop-first?** PWA can serve both — which is primary use context?
@@ -657,3 +817,17 @@ The app should encourage users to stack quest-checking with existing habits:
 - [Circadian Rhythm & Productivity (HBR)](https://hbr.org/2015/01/the-ideal-work-schedule-as-determined-by-circadian-rhythms)
 - [Burnout Detection App (PMC 2022)](https://pmc.ncbi.nlm.nih.gov/articles/PMC9490524/)
 - [Autonomy, Relatedness, Competence in UX (NN/g)](https://www.nngroup.com/articles/autonomy-relatedness-competence/)
+- [Limits of Simple Implementation Intentions for Exercise (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7872013/)
+- [WOOP — Oettingen's Mental Contrasting with Implementation Intentions](https://mindfulambition.net/woop/)
+- [MCII Meta-Analysis (Frontiers in Psychology)](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2021.565202/full)
+- [Maslach Burnout Inventory (Wikipedia)](https://en.wikipedia.org/wiki/Maslach_Burnout_Inventory)
+- [Recovery Experience Questionnaire — Sonnentag & Fritz (2007)](https://pubmed.ncbi.nlm.nih.gov/17638488/)
+- [Planning Fallacy — Kahneman & Tversky](https://thedecisionlab.com/biases/planning-fallacy)
+- [IKEA Effect — Norton, Mochon, Ariely (2012)](https://thedecisionlab.com/biases/ikea-effect)
+- [Locke & Latham Goal-Setting Theory (Stanford)](https://med.stanford.edu/content/dam/sm/s-spire/documents/PD.locke-and-latham-retrospective_Paper.pdf)
+- [Generative Art with JavaScript and SVG (Springer)](https://link.springer.com/book/10.1007/979-8-8688-0086-3)
+- [Claude API Structured Outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
+- [Push Notification Statistics 2025 (MobiLoud)](https://www.mobiloud.com/blog/push-notification-statistics)
+- [Habit Stacking — James Clear](https://jamesclear.com/habit-stacking)
+- [Gamification Onboarding Phases — Yu-kai Chou](https://yukaichou.com/gamification-study/4-experience-phases-gamification-2-onboarding-phase/)
+- [Motion vs Reclaim AI Comparison (Efficient App)](https://efficient.app/compare/motion-vs-reclaim)
