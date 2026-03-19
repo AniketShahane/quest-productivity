@@ -369,7 +369,75 @@ applyRarityEffects(artifact, rarity)
 
 ---
 
-## 6. Data Model (Core Entities)
+## 6. AI Integration Design
+
+### 6.1 AI Use Cases
+
+| Use Case | Trigger | Input | Output | Model |
+|----------|---------|-------|--------|-------|
+| Task classification | Task creation | Title + description | Domain, difficulty, estimated time | Haiku (fast, cheap) |
+| WOOP assistant | Hard+ task creation | Task details | Suggested obstacles + plan templates | Sonnet |
+| Quest decomposition | Epic/Legendary task | Task + WOOP data | Sub-quest chain (3-7 steps) | Sonnet |
+| Daily scheduling | Morning / manual | Backlog + calendar + energy curve | Time-blocked quest board | Haiku |
+| Weekly recap | End of week | Week's quest logs + artifacts | Narrative summary + insights | Sonnet |
+| Burnout detection | Daily (background) | 2-week rolling metrics | Risk score + Recovery Arc trigger | Haiku |
+| Oracle briefing | Morning | Today's schedule | 30-second natural language briefing | Haiku |
+
+### 6.2 Planning Fallacy Mitigation
+
+**Research:** 47% of people underestimate task duration. Planning fallacy persists even when people know similar past tasks took longer (Kahneman & Tversky 1979).
+
+**AI countermeasures:**
+1. **Reference class forecasting:** AI compares user's estimate against (a) their own historical completion times for similar tasks, (b) average completion times across all users for that difficulty tier
+2. **Gentle correction:** "You estimated 30 min for this Hard quest. Your average for similar tasks is 52 min. Want to adjust?"
+3. **Buffer insertion:** AI silently adds 20% buffer when scheduling (configurable)
+4. **Post-hoc calibration:** Track estimate vs actual over time, compute personal bias coefficient, auto-adjust
+
+### 6.3 Structured Output Schema (Claude API)
+
+Task classification uses Claude's structured outputs with strict JSON schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "enum": ["health", "work", "creative", "social", "admin", "learning"]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["trivial", "normal", "hard", "epic", "legendary"]
+    },
+    "estimatedMinutes": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 480
+    },
+    "suggestedObstacles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 3
+    },
+    "isDecomposable": {
+      "type": "boolean"
+    }
+  },
+  "required": ["domain", "difficulty", "estimatedMinutes", "isDecomposable"]
+}
+```
+
+### 6.4 Cost Optimization
+
+- Use **Haiku** for high-frequency, simple tasks (classification, scheduling) — ~$0.001 per call
+- Use **Sonnet** for complex, creative tasks (WOOP assistant, recaps) — ~$0.01 per call
+- Cache common classifications (e.g., "go for a run" → Health/Normal/30min)
+- Batch scheduling calls (process full day, not quest-by-quest)
+- Estimated cost per user: ~$0.50-1.00/month at moderate usage
+
+---
+
+## 7. Data Model (Core Entities)
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌───────────────┐
@@ -439,7 +507,46 @@ applyRarityEffects(artifact, rarity)
 
 ---
 
-## 7. Core User Flows
+## 8. Notification & Engagement Design
+
+### Research-Backed Principles
+
+- Users who enable push notifications show **88% higher engagement** and **3-10x better retention**
+- **2-5 notifications/week** is optimal; >5/week causes 64% of users to disable
+- Targeted notifications: **39% retention** vs 21% for broadcast
+- **Routine-based cues > time-based cues** for habit formation (64% higher success rate)
+- Morning 8-9am and evening 6-8pm have highest click-through rates
+
+### Notification Strategy
+
+| Notification | Timing | Frequency | Content |
+|-------------|--------|-----------|---------|
+| Oracle Briefing | User's chosen morning time | Daily | "Your quest board is ready. 6 quests, ~4h. Shall we begin?" |
+| Quest Reminder | 5 min before scheduled quest | Per-quest | "Time for [Quest Name]. Your plan: [WOOP plan summary]" |
+| Mid-day Check-in | ~1pm (post-lunch dip) | Daily (opt-in) | "3 quests done! Your artifact is taking shape. [preview]" |
+| Day Summary | 8pm (configurable) | Daily | "Today's artifact is complete! [rarity] — tap to see." |
+| Weekly Mosaic | Sunday evening | Weekly | "Your weekly mosaic is ready. See how your week looked." |
+| Boss Battle Alert | Morning of 3rd skip | As needed | "A Boss Battle awaits: [task]. +50% XP if you slay it today." |
+| Recovery Arc | When triggered | Once | "The Oracle notices battle fatigue. Time for a Recovery Arc?" |
+
+### Habit Stacking Integration
+
+The app should encourage users to stack quest-checking with existing habits:
+- "After I [pour coffee / sit at desk / finish lunch], I will [check quest board / start next quest / review progress]"
+- Onboarding asks: "What's your morning trigger?" → sets notification timing
+- Implementation intention FOR the app itself: "If [morning cue], then I will open Quest Productivity"
+
+### Anti-Annoyance Safeguards
+
+- All notifications opt-in by category
+- Smart suppression: don't notify during calendar events marked "Focus"
+- Weekend mode: reduced/no notifications (configurable)
+- If user ignores 3+ notifications in a row → reduce frequency automatically
+- No guilt-tripping language ("You missed..." → "Ready when you are")
+
+---
+
+## 9. Core User Flows
 
 ### Flow 1: Task Creation (WOOP-Inspired)
 
@@ -521,7 +628,7 @@ applyRarityEffects(artifact, rarity)
 
 ---
 
-## 8. Open Questions for User
+## 10. Open Questions for User
 
 1. **Solo or multiplayer first?** Research says social features boost retention but add complexity. Recommend solo-first, social Layer 5.
 2. **Mobile-first or desktop-first?** PWA can serve both — which is primary use context?
