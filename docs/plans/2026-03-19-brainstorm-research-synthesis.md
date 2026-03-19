@@ -125,15 +125,47 @@ Evidence-backed alternatives:
 
 **Design implication:** AI scheduler should learn personal energy patterns over time and schedule Hard/Epic quests during peak hours, Trivial/Normal during dips.
 
-### 1.9 Anti-Burnout Mechanics
+### 1.9 Anti-Burnout & Recovery Mechanics
 
-**Source:** Multiple burnout prevention studies, Maslach Burnout Inventory research.
+**Source:** Maslach Burnout Inventory (MBI), Sonnentag & Fritz (2007) Recovery Experience research.
 
-- Overwork (46%) and inability to disconnect (32%) are primary burnout causes
-- Moderate-severe burnout takes 3-6 months to stabilize
-- 30 days of mindfulness intervention lowers stress by 32%
+**Burnout dimensions (MBI):**
+1. **Exhaustion** — emotional resources depleted (measured by frequency: "never" to "daily")
+2. **Cynicism** — distancing from work as coping mechanism
+3. **Reduced efficacy** — feelings of incompetence
 
-**Design implication:** If system detects 100% capacity for 2+ weeks, proactively suggest "Recovery Arc" — reduced load, Trivial-only quests, framed narratively as rest/training.
+**Five burnout profiles** (Leiter & Maslach):
+- Engagement (positive on all 3)
+- Overextended (exhaustion only)
+- Ineffective (low efficacy only)
+- Disengaged (cynicism only)
+- Burnout (negative on all 3)
+
+**Recovery experiences (Sonnentag & Fritz 2007, n=930):**
+1. **Psychological detachment** — mental disengagement from work (most consistently linked to well-being)
+2. **Relaxation** — low activation, low effort
+3. **Mastery** — learning/challenges outside work domain
+4. **Control** — autonomy over leisure time
+
+**Proxy signals the app can track (without invasive monitoring):**
+- Completion rate trending down over 2+ weeks
+- Increasing quest skips/dismissals
+- Capacity utilization at 90%+ for 14+ days
+- Declining quest acceptance rate from Oracle recommendations
+- Shorter session times (engagement dropping)
+
+**Recovery Arc design:**
+1. **Detection:** AI flags when 2+ proxy signals trigger simultaneously
+2. **Framing:** "Your quest log shows signs of battle fatigue. Even legendary heroes rest. Starting a Recovery Arc."
+3. **Mechanics:**
+   - Daily quest load reduced to 50% of learned capacity
+   - Only Trivial/Normal quests recommended
+   - Special "Recovery quests" added: walks, breaks, non-work mastery activities
+   - Recovery artifacts have their own unique aesthetic (calming, nature-themed)
+4. **Duration:** 3-7 days, user can exit early
+5. **Exit:** "Recovery complete! You've earned the Restoration Artifact." (rare collectible)
+
+**Design implication:** The Recovery Arc serves Sonnentag's 4 recovery experiences — detachment (reduced work quests), relaxation (trivial-only), mastery (non-work challenges), and control (user chooses duration). It's framed as a game mechanic, not a failure state.
 
 ---
 
